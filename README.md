@@ -1,9 +1,19 @@
-# Vue 3 + TypeScript + Vite
+Viewing app without NODE server.
+  1. Open "dist" folder
+  2. Open index.html in the browser
+    2.1 If not able to run due to CORS,
+      just run a web server in your unit
+      then open the index.html
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
-
-## Recommended Setup
-
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
-
-- Use [vue-tsc](https://github.com/vuejs/language-tools/tree/master/packages/tsc) for performing the same type checking from the command line, or for generating d.ts files for SFCs.
+Viewing app using NODE server.
+  1. install npm
+      you can download from here https://nodejs.org/en/download/package-manager
+  2. install pnpm using npm
+    npm install -g pnpm
+  3. install packages
+    pnpm i
+  4. run app
+    pnpm run dev
+  5. open the suggested server
+    example (http://localhost:5173/dist)
+    this has '/dist' due to configured baseURL in vite.config.ts
