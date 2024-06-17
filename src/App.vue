@@ -16,5 +16,5 @@ useSeoMeta({
 })
 </script>
 
-<style scoped>
+<style src="./assets/index.css">
 </style>

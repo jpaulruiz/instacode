@@ -1,26 +1,16 @@
 <template>
-  <NotFound v-if="response.error" />
-  <Pagination
-    :current="pages.current"
-    :total="pages.total"
-    @update="updatePage"
-  />
-  <ul>
-    <li 
-      v-for="(topic, i) in topics"
-      :key="i">
-      <span>{{ topic.name }}</span>
-      <ul>
-        <li 
-          v-for="(comment, i) in topic.comments"
-          :key="i">
-          <span>{{ comment.comment }}</span>
-          <span>{{ comment.by }}</span>
-          <span>{{ comment.date }}</span>
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <div class="main-container">
+    <NotFound v-if="response.error" />
+    <Pagination
+      :current="pages.current"
+      :total="pages.total"
+      @update="updatePage"
+    />
+    <TopicItems 
+      class="main-items"
+      :topics="topics" 
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -28,6 +18,7 @@ import { ref, reactive, onMounted, watchEffect } from 'vue'
 import NotFound from './NotFound.vue'
 import request from '../composables/request.ts'
 import Pagination from '../components/Pagination.vue'
+import TopicItems from '../components/TopicItems.vue'
 import Topics from '../stores/topics.ts'
 import type { Topic, Pages } from '../types/common.ts'
 
@@ -81,13 +72,15 @@ watchEffect(() => {
 </script>
 
 <style scoped>
-ul {
+.main-container {
   display: flex;
   flex-direction: column;
-}
-li {
-  list-style-type: none;
-  display: flex;
-  flex-direction: column;
+  padding: 1rem;
+  gap: 2rem;
+  align-items: center;
+
+  .main-items {
+    width: 40vw;
+  }
 }
 </style>
