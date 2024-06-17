@@ -1,5 +1,5 @@
 //data storage
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import type { Topic, Comment } from '../types/common.ts'
 
 // #region States
@@ -16,11 +16,13 @@ const createTopic = (topic: Topic | Topic[]) => {
   }
 }
 
-const getTopic = (page: number, limit = 20) => {
-  const start = (page - 1) * limit
-  const end = start + limit
-  return topics.value.slice(start, end)
-}
+const getTopic = computed(() => {
+  return (page: number, limit = 20) => {
+    const start = (page - 1) * limit
+    const end = start + limit
+    return topics.value.slice(start, end)
+  }
+})
 
 const updateTopic = (topic: Topic) => {
   const index = topics.value.findIndex(t => t.guid === topic.guid)
@@ -29,8 +31,8 @@ const updateTopic = (topic: Topic) => {
   }
 }
 
-const deleteTopic = (topic: Topic) => {
-  const index = topics.value.findIndex(t => t.guid === topic.guid)
+const deleteTopic = (id: string) => {
+  const index = topics.value.findIndex(t => t.guid === id)
   if (index > -1) {
     topics.value.splice(index, 1)
   }
@@ -39,7 +41,12 @@ const deleteTopic = (topic: Topic) => {
 //comments
 const createComment = (id: string, comment: Comment) => {
   const index = topics.value.findIndex(t => t.guid === id)
-  topics.value[index].comments?.push(comment)
+  if ('comments' in topics.value[index] && topics.value[index].comments) {
+    topics.value[index].comments.push(comment)
+  } else {
+    topics.value[index].comments = []
+    topics.value[index].comments.push(comment)
+  }
 }
 
 const updateComment = (id: string, comment: Comment) => {
@@ -47,8 +54,8 @@ const updateComment = (id: string, comment: Comment) => {
   if (index > -1 
     && 'comments' in topics.value[index] 
     && topics.value[index].comments) {
-    const cIndex = topics.value[index].comments.findIndex(c => c.date === comment.date)
-    if (cIndex && cIndex > -1) {
+    const cIndex = topics.value[index].comments.findIndex(c => c.date === comment.date && c.by === comment.by)
+    if (cIndex !== undefined && cIndex > -1) {
       (topics.value[index].comments)[cIndex] = comment
     }
   }
@@ -57,8 +64,8 @@ const updateComment = (id: string, comment: Comment) => {
 const deleteComment = (id: string, comment: Comment) => {
   const index = topics.value.findIndex(t => t.guid === id)
   if (index > -1) {
-    const cIndex = topics.value[index].comments?.findIndex(c => c.date === comment.date)
-    if (cIndex && cIndex > -1) {
+    const cIndex = topics.value[index].comments?.findIndex(c => c.date === comment.date && c.by === comment.by)
+    if (cIndex !== undefined && cIndex > -1) {
       topics.value[index].comments?.splice(cIndex, 1)
     }
   }
@@ -67,9 +74,9 @@ const deleteComment = (id: string, comment: Comment) => {
 
 export default {
   topics,
+  getTopic,
 
   createTopic,
-  getTopic,
   updateTopic,
   deleteTopic,
 
