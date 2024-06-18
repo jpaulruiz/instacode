@@ -59,13 +59,9 @@
       </button>
       <div
         class="add-comment">
-        <input 
-          v-model="addComment"
-          type="text" 
-          placeholder="Add your comment..."
-          required
-          @keydown.enter="handleComment(topic.guid)"
-        >
+        <Input
+          @update="desc => handleComment(topic.guid, desc)"
+        />
       </div>
     </li>
   </ul>
@@ -74,6 +70,7 @@
 <script lang="ts" setup>
 import type { Topic, Comment } from '../types/common.ts'
 import Topics from '../stores/topics.ts'
+import Input from '../components/Input.vue'
 import { nextTick, ref } from 'vue'
 
 // #region Interfaces
@@ -93,7 +90,6 @@ const newTopic = ref('')
 const activeTopic = ref('')
 const activeComment = ref('')
 const newComment = ref('')
-const addComment = ref('')
 const inputTopic = ref<typeof HTMLInputElement | null>(null)
 const inputComment = ref<typeof HTMLInputElement | null>(null)
 // #endregion
@@ -146,13 +142,12 @@ const updateComment = (id: string, comment: Comment) => {
   newComment.value = ''
 }
 
-const handleComment = (id: string) => {
+const handleComment = (id: string, desc: string) => {
   Topics.createComment(id, {
-    comment: addComment.value,
+    comment: desc,
     by: 'You',
     date: new Date().toISOString()
   })
-  addComment.value = ''
 }
 // #endregion
 </script>
