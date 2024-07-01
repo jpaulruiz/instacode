@@ -1,13 +1,22 @@
 <template>
   <input
     type="text" 
-    placeholder="Add your comment..."
+    :placeholder="placeholder"
+    :value="value"
     required
     @keydown.enter="handleInput"
   >
 </template>
 
 <script lang="ts" setup>
+withDefaults(defineProps<{
+  value?: string
+  placeholder?: string
+}>(), {
+  value: '',
+  placeholder: ''
+})
+
 const emit = defineEmits<{
   update: [string]
 }>()

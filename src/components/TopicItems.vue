@@ -3,17 +3,14 @@
     <li 
       v-for="(topic, i) in topics"
       :key="i">
-      <input 
+      <Input
         v-if="activeTopic === topic.guid"
         ref="inputTopic"
-        v-model="newTopic"
-        type="text" 
+        :value="topic.name"
         placeholder="Press ESC to exit"
         required
-        @keydown.esc="activeTopic = ''"
-        @focusout="activeTopic = ''"
-        @keydown.enter="updateTopic(topic)"
-      >
+        @update="updateTopic({ ...topic, name: $event })"
+      />
       <div
         v-else
         @click="handleTopicUpdate(topic.guid)">
@@ -23,17 +20,13 @@
         <li 
           v-for="(comment, i) in topic.comments"
           :key="i">
-          <input 
+          <Input
             v-if="activeComment === `${comment.by}${comment.date}`"
             ref="inputComment"
-            v-model="newComment"
-            type="text" 
+            :value="comment.comment"
             placeholder="Press ESC to exit"
-            required
-            @keydown.esc="activeComment = ''"
-            @focusout="activeComment = ''"
-            @keydown.enter="updateComment(topic.guid, comment)"
-          >
+            @update="updateComment(topic.guid, { ...comment, comment: $event })"
+          />
           <p 
             v-else
             @click="handleCommentUpdate(`${comment.by}${comment.date}`)"
@@ -86,10 +79,8 @@ withDefaults(defineProps<Props>(), {
 // #endregion
 
 // #region States
-const newTopic = ref('')
 const activeTopic = ref('')
 const activeComment = ref('')
-const newComment = ref('')
 const inputTopic = ref<typeof HTMLInputElement | null>(null)
 const inputComment = ref<typeof HTMLInputElement | null>(null)
 // #endregion
@@ -109,9 +100,8 @@ const handleDelete = (id: string, comment?: Comment) => {
 }
 
 const updateTopic = (topic: Topic) => {
-  Topics.updateTopic({ ...topic, name: newTopic.value })
+  Topics.updateTopic(topic)
   activeTopic.value = ''
-  newTopic.value = ''
 }
 
 const handleTopicUpdate = (id: string) => {
@@ -137,9 +127,8 @@ const handleCommentUpdate = (id: string) => {
 }
 
 const updateComment = (id: string, comment: Comment) => {
-  Topics.updateComment(id, { ...comment, comment: newComment.value })
+  Topics.updateComment(id, comment)
   activeComment.value = ''
-  newComment.value = ''
 }
 
 const handleComment = (id: string, desc: string) => {
