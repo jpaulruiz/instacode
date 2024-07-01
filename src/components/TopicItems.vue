@@ -9,6 +9,8 @@
         :value="topic.name"
         placeholder="Press ESC to exit"
         required
+        @esc="activeTopic = ''"
+        @focusout="activeTopic = ''"
         @update="updateTopic({ ...topic, name: $event })"
       />
       <div
@@ -25,6 +27,8 @@
             ref="inputComment"
             :value="comment.comment"
             placeholder="Press ESC to exit"
+            @esc="activeComment = ''"
+            @focusout="activeComment = ''"
             @update="updateComment(topic.guid, { ...comment, comment: $event })"
           />
           <p 
@@ -81,8 +85,8 @@ withDefaults(defineProps<Props>(), {
 // #region States
 const activeTopic = ref('')
 const activeComment = ref('')
-const inputTopic = ref<typeof HTMLInputElement | null>(null)
-const inputComment = ref<typeof HTMLInputElement | null>(null)
+const inputTopic = ref<InstanceType<typeof Input> | null>(null)
+const inputComment = ref<InstanceType<typeof Input> | null>(null)
 // #endregion
 
 // #region Methods
@@ -107,22 +111,14 @@ const updateTopic = (topic: Topic) => {
 const handleTopicUpdate = (id: string) => {
   activeTopic.value = id
   nextTick(() => {
-    if (inputTopic.value !== null &&
-      '0' in inputTopic.value &&
-      inputTopic.value[0] instanceof HTMLInputElement) {
-      inputTopic.value[0].focus()
-    }
+    inputTopic.value[0].$el.focus()
   })
 }
 
 const handleCommentUpdate = (id: string) => {
   activeComment.value = id
   nextTick(() => {
-    if (inputComment.value !== null &&
-      '0' in inputComment.value &&
-      inputComment.value[0] instanceof HTMLInputElement) {
-      inputComment.value[0].focus()
-    }
+    inputComment.value[0].$el.focus()
   })
 }
 

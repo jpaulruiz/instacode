@@ -4,7 +4,9 @@
     :placeholder="placeholder"
     :value="value"
     required
+    @keydown.esc="emit('esc', undefined)"
     @keydown.enter="handleInput"
+    @focusout="emit('focusout', undefined)"
   >
 </template>
 
@@ -19,6 +21,8 @@ withDefaults(defineProps<{
 
 const emit = defineEmits<{
   update: [string]
+  esc: [undefined]
+  focusout: [undefined]
 }>()
 
 const handleInput = (e: Event) => {
